@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <stdexcept>
 #include <algorithm>
 
@@ -951,15 +952,15 @@ void Hud::drawBubbleText(Graphics* graphics) {
 	int n3 = 0;
 	int n4 = 6;
 	switch ((unsigned int)this->bubbleColor) {
-		case 0xFF800000: {
+		case (unsigned int)0xFF800000: {
 			n3 = 0;
 			break;
 		}
-		case 0xFF002864: {
+		case (unsigned int)0xFF002864: {
 			n3 = 10;
 			break;
 		}
-		case 0xFF2E0854: {
+		case (unsigned int)0xFF2E0854: {
 			n3 = 20;
 			break;
 		}
@@ -968,7 +969,7 @@ void Hud::drawBubbleText(Graphics* graphics) {
 			n4 = 12;
 			break;
 		}
-		case 0xFFFF9600: {
+		case (unsigned int)0xFFFF9600: {
 			n3 = 45;
 			n4 = 12;
 			break;

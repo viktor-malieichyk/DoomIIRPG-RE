@@ -15,6 +15,12 @@ if(UNIX)
 	add_definitions("-Wno-write-strings")
 endif()
 
+if(CMAKE_SYSTEM_NAME STREQUAL "iOS")
+  enable_language(OBJC)
+  include(ios/Build.cmake)
+  return()
+endif()
+
 find_package(SDL2 REQUIRED)
 find_package(ZLIB REQUIRED)
 find_package(OpenAL REQUIRED)

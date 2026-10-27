@@ -1,7 +1,11 @@
 #ifndef __IMAGE_H__
 #define __IMAGE_H__
 
+#ifdef DOOMRPG_IOS
+#include "GLESCompat.h"
+#else
 #include <SDL_opengl.h>
+#endif
 
 class IDIB;
 

@@ -222,7 +222,11 @@ int OutputStream::openFile(const char* fileName, int openMode) {
 		std::strcat(command, dir);
 		std::strcat(command, "\"");
 		//printf("command %s\n", command);
+#ifdef DOOMRPG_IOS
+        mkdir(dir,0700);
+#else
 		std::system(command);
+#endif
 	}
 
 	std::strcpy(namePath, dir);

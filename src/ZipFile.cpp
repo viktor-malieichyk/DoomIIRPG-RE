@@ -22,6 +22,7 @@ void Error(const char* fmt, ...)
 	va_end(ap);
 
 	printf("%s", errMsg);
+    SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "%s", errMsg);
 
 	const SDL_MessageBoxButtonData buttons[] = {
 		{ /* .flags, .buttonid, .text */        0, 0, "Ok" },
@@ -42,7 +43,7 @@ void Error(const char* fmt, ...)
 	};
 	const SDL_MessageBoxData messageboxdata = {
 		SDL_MESSAGEBOX_ERROR, /* .flags */
-		NULL, /* .window */
+		SDL_GL_GetCurrentWindow(), /* .window */
 		"Doom II RPG Error", /* .title */
 		errMsg, /* .message */
 		SDL_arraysize(buttons), /* .numbuttons */

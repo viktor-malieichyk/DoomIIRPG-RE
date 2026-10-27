@@ -1,5 +1,8 @@
 
 #include <stdexcept>
+#ifdef DOOMRPG_IOS
+#include <TargetConditionals.h>
+#endif
 
 #include "SDLGL.h"
 #include "App.h"
@@ -49,11 +52,19 @@ bool SDLGL::Initialize() {
 	if (!this->initialized) {
 		
 		SDL_SetHint(SDL_HINT_NO_SIGNAL_HANDLERS, "1");
+#if defined(DOOMRPG_IOS) && TARGET_OS_SIMULATOR
+        SDL_SetHint(SDL_HINT_VIDEO_HIGHDPI_DISABLED, "1");
+#endif
 		if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
 			printf("Could not initialize SDL: %s", SDL_GetError());
 		}
 
-		flags = SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN /* | SDL_WINDOW_RESIZABLE*/;
+		#ifdef DOOMRPG_IOS
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 1);
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
+#endif
+        flags = SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN /* | SDL_WINDOW_RESIZABLE*/;
 		// Set the highdpi flags - this makes a big difference on Macs with
 		// retina displays, especially when using small window sizes.
 		flags |= SDL_WINDOW_ALLOW_HIGHDPI;
@@ -115,6 +126,7 @@ void SDLGL::Error(const char* fmt, ...)
 	va_end(ap);
 
 	printf("%s", errMsg);
+    SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "%s", errMsg);
 
 	const SDL_MessageBoxButtonData buttons[] = {
 		{ /* .flags, .buttonid, .text */        0, 0, "Ok" },
@@ -135,7 +147,7 @@ void SDLGL::Error(const char* fmt, ...)
 	};
 	const SDL_MessageBoxData messageboxdata = {
 		SDL_MESSAGEBOX_ERROR, /* .flags */
-		NULL, /* .window */
+		SDL_GL_GetCurrentWindow(), /* .window */
 		"Doom II RPG Error", /* .title */
 		errMsg, /* .message */
 		SDL_arraysize(buttons), /* .numbuttons */
@@ -154,6 +166,9 @@ void SDLGL::Error(const char* fmt, ...)
 
 
 void SDLGL::transformCoord2f(float* x, float* y) {
+#ifdef DOOMRPG_IOS
+ return;
+#endif
 	int w, h;
 	SDL_GetWindowSize(this->window, &w, &h);
 	*x *= (float)w / (float)Applet::IOS_WIDTH;
@@ -161,6 +176,9 @@ void SDLGL::transformCoord2f(float* x, float* y) {
 }
 
 void SDLGL::centerMouse(int x, int y) {
+#ifdef DOOMRPG_IOS
+ return;
+#endif
 	float X = (float)((Applet::IOS_WIDTH / 2) + x);
 	float Y = (float)((Applet::IOS_HEIGHT / 2) + y);
 	this->transformCoord2f(&X, &Y);

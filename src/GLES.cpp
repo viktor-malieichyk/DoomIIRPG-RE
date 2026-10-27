@@ -137,8 +137,12 @@ void gles::BeginFrame(int x, int y, int w, int h, int* mtxView, int* mtxProjecti
 	this->vPortRect[2] = gles::scale * w;
 	this->vPortRect[3] = gles::scale * h;
 
-	CAppContainer::getInstance()->sdlGL->transformCoord2f((float*)&this->vPortRect[0], (float*)&this->vPortRect[1]);
-	CAppContainer::getInstance()->sdlGL->transformCoord2f((float*)&this->vPortRect[2], (float*)&this->vPortRect[3]);
+	float px=(float)this->vPortRect[0], py=(float)this->vPortRect[1];
+    float pw=(float)this->vPortRect[2], ph=(float)this->vPortRect[3];
+    CAppContainer::getInstance()->sdlGL->transformCoord2f(&px,&py);
+    CAppContainer::getInstance()->sdlGL->transformCoord2f(&pw,&ph);
+    this->vPortRect[0]=(int)px; this->vPortRect[1]=(int)py;
+    this->vPortRect[2]=(int)pw; this->vPortRect[3]=(int)ph;
 #endif
 	
 	//printf("this->vPortRect[0] %d\n", this->vPortRect[0]);
@@ -207,7 +211,7 @@ void gles::ResetGLState() {
 	int height = sdlGL->vidHeight;
 
 	int cx, cy;
-	SDL_GetWindowSize(sdlGL->window, &cx, &cy);
+	RPG_GetRenderSize(sdlGL->window, &cx, &cy);
 	if (width != cx || height != cy) {
 		width = cx; height = cy;
 	}

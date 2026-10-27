@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <stdexcept>
 
 #include "CAppContainer.h"
@@ -4316,7 +4317,7 @@ void Render::Render3dScene(void) {
 	int cx, cy;
 	int w = CAppContainer::getInstance()->sdlGL->vidWidth;
 	int h = CAppContainer::getInstance()->sdlGL->vidHeight;
-	SDL_GetWindowSize(CAppContainer::getInstance()->sdlGL->window, &cx, &cy);
+	RPG_GetRenderSize(CAppContainer::getInstance()->sdlGL->window, &cx, &cy);
 	if (w != cx || h != cy) {
 		w = cx; h = cy;
 	}

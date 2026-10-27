@@ -1,7 +1,12 @@
+#include <cstdio>
+#include <cstdint>
+#include <sys/stat.h>
 #ifndef __JAVASTREAM_H__
 #define __JAVASTREAM_H__
 
 #include <stdint.h>
+#include <cstdio>
+#include <sys/stat.h>
 #include <stdio.h>
 #define LT_RESOURCE 5
 #define LT_FILE		6

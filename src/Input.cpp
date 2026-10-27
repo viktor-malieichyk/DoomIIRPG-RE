@@ -1,3 +1,6 @@
+#ifdef DOOMRPG_IOS
+#include "Platform.h"
+#endif
 #include <stdexcept>
 
 #include "CAppContainer.h"
@@ -722,6 +725,20 @@ void Input::handleEvents() noexcept {
 
     while (SDL_PollEvent(&sdlEvent) != 0) {
         switch (sdlEvent.type) {
+#ifdef DOOMRPG_IOS
+            case SDL_FINGERDOWN:
+            case SDL_FINGERMOTION:
+            case SDL_FINGERUP: {
+                float x=sdlEvent.tfinger.x, y=sdlEvent.tfinger.y;
+                bool inside=IOS_MapTouch(&x,&y);
+                if(inside) { gCurMouseX=x; gCurMouseY=y; }
+                if(sdlEvent.type==SDL_FINGERDOWN && inside) CAppContainer::getInstance()->userPressed(x,y);
+                else if(sdlEvent.type==SDL_FINGERMOTION && inside) CAppContainer::getInstance()->userMoved(x,y);
+                else if(sdlEvent.type==SDL_FINGERUP) { CAppContainer::getInstance()->userReleased(gCurMouseX,gCurMouseY); CAppContainer::getInstance()->unHighlightButtons(); }
+                break;
+            }
+#endif
+
             case SDL_QUIT: {
                 printf("handleEvents::SDL_QUIT\n");
                 CAppContainer::getInstance()->app->shutdown();

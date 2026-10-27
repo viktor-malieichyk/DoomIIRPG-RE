@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <stdexcept>
 #include <assert.h>
 #include <algorithm>

@@ -1,3 +1,12 @@
+# Doom II RPG: iOS port
+
+This fork adds an ARM64 iPhone/iPad build, UIKit scene lifecycle, landscape touch
+controls and gamepad support, Retina rendering, game-data import from Files/iCloud
+Drive, and manual save backup/restore through Files/iCloud Drive.
+
+See [iOS build, signing and setup](ios/README.md). Game data is not included.
+Original project and credits follow.
+
 # DoomIIRPG-RE
 
 ![image](https://github.com/Erick194/DoomIIRPG-RE/assets/41172072/6249f7bd-18e6-4838-b1ec-8654d18cc1b4)<br>

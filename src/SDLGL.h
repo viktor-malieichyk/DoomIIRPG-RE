@@ -2,7 +2,12 @@
 #define __SDLGL_H__
 
 #include <SDL.h>
+#ifdef DOOMRPG_IOS
+#include "GLESCompat.h"
+#else
 #include <SDL_opengl.h>
+#define RPG_GetRenderSize SDL_GetWindowSize
+#endif
 
 typedef struct SDLResVidModes_s {
 	int width, height;

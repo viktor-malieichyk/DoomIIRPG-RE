@@ -1,3 +1,6 @@
+#ifdef DOOMRPG_IOS
+#include "Platform.h"
+#endif
 #include <stdexcept>
 #include <stdio.h>
 #include <stdlib.h>
@@ -24,15 +27,42 @@
 
 void drawView(SDLGL* sdlGL);
 
+#ifdef DOOMRPG_IOS
+struct IOSGameLoop {
+ SDLGL video;
+ ZipFile archive;
+ Input input;
+};
+static void iosFrame(void* context) {
+ IOSGameLoop* loop=(IOSGameLoop*)context;
+ if(IOS_Paused() || CAppContainer::getInstance()->app->closeApplet)return;
+ loop->input.handleEvents();
+ drawView(&loop->video);
+ loop->input.consumeEvents();
+}
+extern "C" int SDL_main(int argc,char** argv) {
+ IOS_SetupStorage();
+ IOSGameLoop* loop=new IOSGameLoop;
+ loop->video.Initialize();
+ IOS_Prepare(loop->video.window);
+ loop->archive.openZipFile("Doom 2 RPG.ipa");
+ loop->input.init();
+ CAppContainer::getInstance()->Construct(&loop->video,&loop->archive);
+ loop->video.updateVideo();
+ SDL_iPhoneSetAnimationCallback(loop->video.window,1,iosFrame,loop);
+ return 0;
+}
+#else
 int main(int argc, char* args[]) {
-
     int		UpTime = 0;
     
     ZipFile zipFile;
     zipFile.openZipFile("Doom 2 RPG.ipa");
 
+#ifndef DOOMRPG_IOS
 	SDLGL sdlGL;
 	sdlGL.Initialize();
+#endif
 
     Input input;
     input.init(); // [GEC] Port: set default Binds
@@ -59,6 +89,9 @@ int main(int argc, char* args[]) {
 
     while (CAppContainer::getInstance()->app->closeApplet != true) {
 
+        #ifdef DOOMRPG_IOS
+        if (IOS_Paused()) { SDL_PumpEvents(); SDL_Delay(16); continue; }
+#endif
         int currentTimeMillis = CAppContainer::getInstance()->getTimeMS();
 
         //if (!useMouse) {
@@ -84,6 +117,8 @@ int main(int argc, char* args[]) {
 }
 
 
+#endif
+
 static uint32_t lastTimems = 0;
 
 void drawView(SDLGL *sdlGL) {
@@ -96,7 +131,7 @@ void drawView(SDLGL *sdlGL) {
         lastTimems = CAppContainer::getInstance()->getTimeMS();
     }
 
-    SDL_GetWindowSize(sdlGL->window, &cx, &cy);
+    RPG_GetRenderSize(sdlGL->window, &cx, &cy);
     if (w != cx || h != cy) {
         w = cx; h = cy;
     }

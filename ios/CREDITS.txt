@@ -1,0 +1,7 @@
+Doom II RPG reverse engineering by Erick Vasquez Garcia / GEC.
+Original project: https://github.com/Erick194/DoomIIRPG-RE
+iOS port source: https://github.com/viktor-malieichyk/DoomIIRPG-RE/tree/v0.2.0-ios-preview
+
+Source is distributed under GPLv3; see Game-LICENSE.txt.
+SDL2 uses the zlib license; see SDL-LICENSE.txt.
+Original game resources and sound assets are not included.
