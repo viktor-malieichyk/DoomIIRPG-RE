@@ -85,3 +85,6 @@ sh test-ios.sh '/path/to/Doom 2 RPG.ipa'
 
 Device installation and actual signed-in iCloud transfer require validation on
 your iPhone. No game assets or personal saves are included in published packages.
+
+Audio uses the ambient mixing session and does not mute or lower other apps.
+Switching away suspends game audio; returning restores the scene layout and audio context.

@@ -1,4 +1,5 @@
 #import <UIKit/UIKit.h>
+#import <AVFAudio/AVAudioSession.h>
 #import <UniformTypeIdentifiers/UniformTypeIdentifiers.h>
 #include <unistd.h>
 #include <SDL.h>
@@ -120,6 +121,9 @@ static void button(UIView* view,NSString* title,int key,CGFloat x,CGFloat y,BOOL
  else [b addTarget:mobile action:@selector(menu) forControlEvents:UIControlEventTouchUpInside];
 }
 void IOS_SetupStorage(void) {
+ SDL_SetHint(SDL_HINT_AUDIO_CATEGORY,"ambient");
+ SDL_SetHint(SDL_HINT_ORIENTATIONS,"LandscapeLeft LandscapeRight");
+ IOS_SetActive(1);
  NSString* docs=NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,NSUserDomainMask,YES).firstObject;
  folder=[docs stringByAppendingPathComponent:@"Game"];
  [NSFileManager.defaultManager createDirectoryAtPath:folder withIntermediateDirectories:YES attributes:nil error:nil];
@@ -162,4 +166,34 @@ int IOS_MapTouch(float* x,float* y) {
  *x=(*x*w-(w-480*scale)/2)/(480*scale);
  *y=(*y*h-(h-320*scale)/2)/(320*scale);
  return *x>=0 && *x<=1 && *y>=0 && *y<=1;
+}
+
+void IOS_ResetTouch(void) {
+ for (int key = 1; key < SDL_NUM_SCANCODES; ++key) {
+  SDL_Event event = {0}; event.type = SDL_KEYUP; event.key.state = SDL_RELEASED;
+  event.key.keysym.scancode = (SDL_Scancode)key; SDL_PushEvent(&event);
+ }
+}
+void IOS_RefreshLayout(void) {
+ if (!host) return;
+ UIWindow* window = host.view.window;
+ if (!window.windowScene) return;
+ window.frame = window.windowScene.coordinateSpace.bounds;
+ host.view.frame = window.bounds;
+ [host.view setNeedsLayout]; [host.view layoutIfNeeded];
+}
+extern void IOS_AudioContextActive(int active);
+
+void IOS_SetActive(int active) {
+ AVAudioSession* session = AVAudioSession.sharedInstance;
+ if (!active) IOS_AudioContextActive(0);
+
+ if (active) {
+  [session setCategory:AVAudioSessionCategoryAmbient mode:AVAudioSessionModeDefault
+               options:AVAudioSessionCategoryOptionMixWithOthers error:nil];
+  [session setActive:YES error:nil];
+ } else {
+  [session setActive:NO withOptions:AVAudioSessionSetActiveOptionNotifyOthersOnDeactivation error:nil];
+ }
+ if (active) IOS_AudioContextActive(1);
 }

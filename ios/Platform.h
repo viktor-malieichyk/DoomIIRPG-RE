@@ -9,6 +9,9 @@ int IOS_Paused(void);
 int IOS_MapTouch(float* x,float* y);
 void IOS_GLViewport(int x,int y,int w,int h);
 void IOS_GLScissor(int x,int y,int w,int h);
+void IOS_SetActive(int active);
+void IOS_ResetTouch(void);
+void IOS_RefreshLayout(void);
 #ifdef __cplusplus
 }
 #endif

@@ -20,6 +20,7 @@
 #include "Graphics.h"
 #include "Player.h"
 #include "Game.h"
+#include "Sound.h"
 #include "Graphics.h"
 #include "Utils.h"
 #include "TinyGL.h"
@@ -28,6 +29,12 @@
 void drawView(SDLGL* sdlGL);
 
 #ifdef DOOMRPG_IOS
+static bool iosGameReady;
+extern "C" void IOS_AudioContextActive(int active) {
+ if (!iosGameReady) return;
+ Sound* sound = CAppContainer::getInstance()->app->sound;
+ if (active) sound->openAL_Resume(); else sound->openAL_Suspend();
+}
 struct IOSGameLoop {
  SDLGL video;
  ZipFile archive;
@@ -48,6 +55,7 @@ extern "C" int SDL_main(int argc,char** argv) {
  loop->archive.openZipFile("Doom 2 RPG.ipa");
  loop->input.init();
  CAppContainer::getInstance()->Construct(&loop->video,&loop->archive);
+ iosGameReady = true;
  loop->video.updateVideo();
  SDL_iPhoneSetAnimationCallback(loop->video.window,1,iosFrame,loop);
  return 0;
